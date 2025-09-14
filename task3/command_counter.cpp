@@ -2,29 +2,26 @@
 #include <fstream>
 #include <string>
 #include <unordered_map>
+using namespace std;
 
 int main(int argc, char* argv[]) {
     if (argc != 2) {
-        std::cerr << "Usage: " << argv[0] << " <log_file_path>" << std::endl;
+        cerr << "Usage: " << argv[0] << " <log_file_path>" << endl;
         return 1;
     }
 
-    std::ifstream logFile(argv[1]);
-    if (!logFile.is_open()) {
-        std::cerr << "Error: Could not open file " << argv[1] << std::endl;
-        return 1;
-    }
+    ifstream logFile(argv[1]);
+    unordered_map<string, int> commandCounts;
+    string line;
 
-    std::unordered_map<std::string, int> commandCounts;
-    std::string line;
-    while (std::getline(logFile, line)) {
+    while (getline(logFile, line)) {
         if (!line.empty()) {
             commandCounts[line]++;
         }
     }
 
     for (const auto& pair : commandCounts) {
-        std::cout << pair.first << ": " << pair.second << std::endl;
+        cout << pair.first << ": " << pair.second << endl;
     }
 
     logFile.close();
