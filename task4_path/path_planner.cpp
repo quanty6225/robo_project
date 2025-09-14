@@ -8,7 +8,6 @@
 
 using namespace std;
 
-// 定义坐标点结构
 struct Point {
     int x, y;
     Point(int x, int y) : x(x), y(y) {}
@@ -17,11 +16,9 @@ struct Point {
     }
 };
 
-// 方向：上、右、下、左
 const int dx[] = {-1, 0, 1, 0};
 const int dy[] = {0, 1, 0, -1};
 
-// 读取地图文件
 vector<vector<int>> readMap(const string& filePath) {
     ifstream file(filePath);
     if (!file.is_open()) {
@@ -49,12 +46,10 @@ vector<vector<int>> readMap(const string& filePath) {
     return map;
 }
 
-// 使用BFS寻找路径
 vector<Point> findPath(vector<vector<int>>& map, Point start, Point goal) {
     size_t rows = map.size();
     size_t cols = map[0].size();
     
-    // 检查起点和终点是否有效
     if (start.x < 0 || start.x >= static_cast<int>(rows) || 
         start.y < 0 || start.y >= static_cast<int>(cols) || 
         map[start.x][start.y] == 1) {
@@ -66,7 +61,6 @@ vector<Point> findPath(vector<vector<int>>& map, Point start, Point goal) {
         throw invalid_argument("终点无效或不可通行");
     }
     
-    // 创建前驱节点矩阵
     vector<vector<Point>> predecessor(rows, vector<Point>(cols, Point(-1, -1)));
     vector<vector<bool>> visited(rows, vector<bool>(cols, false));
     
@@ -78,7 +72,6 @@ vector<Point> findPath(vector<vector<int>>& map, Point start, Point goal) {
         Point current = q.front();
         q.pop();
         
-        // 如果到达目标点，回溯路径
         if (current.x == goal.x && current.y == goal.y) {
             vector<Point> path;
             stack<Point> temp;
@@ -98,7 +91,6 @@ vector<Point> findPath(vector<vector<int>>& map, Point start, Point goal) {
             return path;
         }
         
-        // 探索四个方向
         for (int i = 0; i < 4; i++) {
             int nx = current.x + dx[i];
             int ny = current.y + dy[i];
@@ -112,20 +104,15 @@ vector<Point> findPath(vector<vector<int>>& map, Point start, Point goal) {
             }
         }
     }
-    
-    // 如果没有找到路径
     return vector<Point>();
 }
 
-// 打印地图和路径
 void printMapWithPath(vector<vector<int>>& map, const vector<Point>& path) {
-    // 创建地图副本，将路径标记为2
     vector<vector<int>> mapCopy = map;
     for (const auto& p : path) {
         mapCopy[p.x][p.y] = 2;
     }
     
-    // 打印地图
     for (size_t i = 0; i < mapCopy.size(); i++) {
         for (size_t j = 0; j < mapCopy[i].size(); j++) {
             if (mapCopy[i][j] == 0) {
@@ -147,20 +134,17 @@ int main(int argc, char* argv[]) {
     }
     
     try {
-        // 解析命令行参数
         string mapFilePath = argv[1];
         int startX = stoi(argv[2]);
         int startY = stoi(argv[3]);
         int goalX = stoi(argv[4]);
         int goalY = stoi(argv[5]);
         
-        // 读取地图
         vector<vector<int>> map = readMap(mapFilePath);
         
         Point start(startX, startY);
         Point goal(goalX, goalY);
         
-        // 寻找路径
         vector<Point> path = findPath(map, start, goal);
         
         if (path.empty()) {
